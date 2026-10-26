@@ -1,0 +1,24 @@
+services:
+  paperless-deskew:
+    image: ghcr.io/<owner>/paperless-deskew:latest
+    # build: .
+    container_name: paperless-deskew
+    restart: unless-stopped
+    environment:
+      HOOK_DIR: /hooks                   # copy the pre-consume hook here
+      # Tag service for documents already in paperless (optional)
+      PAPERLESS_URL: http://paperless:8000   # or http://<host>:8000
+      PAPERLESS_TOKEN: <API token from "My profile" in paperless>
+      # PAPERLESS_DESKEW_TAG: begradigen
+      # PAPERLESS_DESKEW_ERROR_TAG: begradigen-fehler
+      TZ: Europe/Berlin
+    volumes:
+      - ./hooks:/hooks
+
+# In the paperless-ngx compose file (webserver service):
+#
+#   environment:
+#     PAPERLESS_PRE_CONSUME_SCRIPT: /usr/src/paperless/scripts/deskew_hook.py
+#     PAPERLESS_OCR_DESKEW: "false"
+#   volumes:
+#     - /path/to/paperless-deskew/hooks:/usr/src/paperless/scripts:ro
